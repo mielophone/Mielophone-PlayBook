@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<qnx>
+   <icon>
+      <image>assets/logo/logo-72.png</image>
+   </icon>
+
+   <author>Codezen</author>
+   <authorId>gYAAgLxxB7evHLsw3Fn65ZR9E1s</authorId>
+   <category>core.media</category>
+   <action>access_internet</action>
+   <action>play_audio</action>
+   <buildId>2</buildId>
+   <platformVersion>1.0.0.0</platformVersion>
+   <permission>access_internet</permission>
+   <permission>play_audio</permission>
+</qnx>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:player="com.mielophone.ui.player.*" 
+		xmlns:buttons="com.mielophone.ui.buttons.*"
+		actionBarVisible="false">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	
+	<!-- <s:List width="100%" top="0" bottom="50" itemRenderer="com.mielophone.ui.itemrenderers.BigButtonItem">
+		<s:layout>
+			<s:HorizontalLayout gap="5" />
+		</s:layout>
+		<s:dataProvider>
+			<s:ArrayCollection>
+				<fx:Object image="@Embed('/assets/home/tag.png')" text="TAG" mainColor="#1b7a39" />
+				<fx:Object image="@Embed('/assets/home/album.png')" text="ALBUM" mainColor="#d40000" />
+				<fx:Object image="@Embed('/assets/home/band.png')" text="ARTIST" mainColor="#732b90" />
+				<fx:Object image="@Embed('/assets/home/song.png')" text="SONG" mainColor="#0e85c9" />
+				<fx:Object image="@Embed('/assets/home/mood.png')" text="MOOD" mainColor="#f89a25" />
+			</s:ArrayCollection>
+		</s:dataProvider>
+	</s:List> -->
+	<s:Label text="Mielophone" fontFamily="Pulse" fontSize="64" horizontalCenter="0" top="20" />
+	
+	<s:HGroup left="5" right="5" top="100" bottom="60" horizontalAlign="center" verticalAlign="middle" gap="10">
+		<buttons:BigButton image="@Embed('/assets/home/artist.png')" text="Artist" click="{FlexGlobals.topLevelApplication.openArtists()}" />
+		<buttons:BigButton image="@Embed('/assets/home/album.png')" text="Album" click="{FlexGlobals.topLevelApplication.openAlbums()}" />
+		<buttons:BigButton image="@Embed('/assets/home/song.png')" text="Song" click="{FlexGlobals.topLevelApplication.openSongs()}" />
+	</s:HGroup>
+	
+	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	
+</s:View>

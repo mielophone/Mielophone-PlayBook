@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		initialize="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.codezen.mse.models.Song;
+			import com.codezen.mse.playr.Playr;
+			import com.codezen.mse.playr.PlayrErrorEvent;
+			import com.codezen.mse.playr.PlayrEvent;
+			import com.codezen.mse.playr.PlayrStates;
+			import com.codezen.mse.playr.PlayrTrack;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import qnx.system.QNXSystem;
+			import qnx.system.QNXSystemPowerMode;
+			
+			// ----------------------------------
+			[Bindable]
+			[Embed(source="/assets/player/play.png")] //@Embed()
+			private var playImg:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/player/pause.png")] //@Embed()
+			private var pauseImg:Class;
+			
+			// ----------------------------------
+			private function group1_creationCompleteHandler(event:FlexEvent):void{
+				var pl:Playr = FlexGlobals.topLevelApplication.player;
+				
+				if(pl.playrState == PlayrStates.PLAYING){
+					play_btn.source = pauseImg;
+				}
+				
+				pl.addEventListener(PlayrEvent.PLAYRSTATE_CHANGED, onPlayerState);
+				pl.addEventListener(PlayrEvent.TRACK_PROGRESS, onProgress);
+				pl.addEventListener(PlayrEvent.SONGINFO, onSong);
+				pl.addEventListener(PlayrEvent.TRACK_COMPLETE, onTrackEnd);
+			}
+			
+			private function onTrackEnd(e:PlayrEvent):void{
+				nowplay_text.text = "Searching for stream..";
+				FlexGlobals.topLevelApplication.findNextSong();
+			}
+			
+			private function onPlayerState(e:PlayrEvent):void{
+				switch(e.playrState){
+					case PlayrStates.PLAYING:
+						play_btn.source = pauseImg;
+						//QNXSystem.system.inactivePowerMode = QNXSystemPowerMode.THROTTLED;
+						break;
+					case PlayrStates.STOPPED:
+					case PlayrStates.PAUSED:
+					case PlayrStates.WAITING:
+						//QNXSystem.system.inactivePowerMode = QNXSystemPowerMode.NORMAL;
+						play_btn.source = playImg;
+						time_max_text.text = "??";
+						time_cur_text.text = "??";
+						break;
+				}
+			}
+			
+			private function onProgress(e:PlayrEvent):void{
+				if(time_slider.maximum != FlexGlobals.topLevelApplication.player.totalSeconds){
+					time_slider.maximum = FlexGlobals.topLevelApplication.player.totalSeconds;
+					time_max_text.text = FlexGlobals.topLevelApplication.player.totalTime;
+					nowplay_text.text = FlexGlobals.topLevelApplication.player.artist + ' - ' + FlexGlobals.topLevelApplication.player.title;
+				}
+				if(!isDragging){
+					time_slider.value = FlexGlobals.topLevelApplication.player.currentSeconds;
+				}
+				time_cur_text.text = FlexGlobals.topLevelApplication.player.currentTime;
+			}
+			
+			private function onSong(e:PlayrEvent):void{
+				var t:Song;
+				var index:int = 0;
+				for each(t in FlexGlobals.topLevelApplication._playQueue){
+					if(t.artist.name == FlexGlobals.topLevelApplication.player.artist && 
+					   t.name == FlexGlobals.topLevelApplication.player.title &&
+					   (t.duration/1000) == FlexGlobals.topLevelApplication.player.totalSeconds){
+						FlexGlobals.topLevelApplication._playPos = index;
+						break;
+					}
+					index++;
+				}
+				
+				time_slider.maximum = FlexGlobals.topLevelApplication.player.totalSeconds;
+				time_max_text.text = FlexGlobals.topLevelApplication.player.totalTime;
+				nowplay_text.text = FlexGlobals.topLevelApplication.player.artist + ' - ' + FlexGlobals.topLevelApplication.player.title;
+			}
+			
+			// ------------------			
+			private function secToTime(sec:Number):String{
+				var duration:String = '';
+				var secs:int = sec;
+				var mins:int = Math.floor(secs/60);
+				secs = secs - mins*60;
+				if( secs < 10 ){
+					duration = mins+":0"+secs;
+				}else{
+					duration = mins+":"+secs;
+				}
+				return duration;
+			}
+			
+			// -----------------------------------
+			
+			private function stop_btn_clickHandler(event:MouseEvent):void{
+				FlexGlobals.topLevelApplication.player.stop();
+			}
+			
+			private function next_btn_clickHandler(event:MouseEvent):void{
+				FlexGlobals.topLevelApplication.findNextSong();
+			}
+			
+			private function prev_btn_clickHandler(event:MouseEvent):void{
+				FlexGlobals.topLevelApplication.findPrevSong();
+			}
+			
+			private function play_btn_clickHandler(event:MouseEvent):void{
+				FlexGlobals.topLevelApplication.player.togglePlayPause();
+			}
+			
+			// ----------------------------------------
+			private var isDragging:Boolean;
+			private function time_slider_changeStartHandler(event:FlexEvent):void{
+				isDragging = true;
+			}
+			
+			private function time_slider_changeEndHandler(event:FlexEvent):void{
+				isDragging = false;
+				
+				FlexGlobals.topLevelApplication.player.scrobbleTo(time_slider.value*1000);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="#222222" />
+				<s:GradientEntry color="#000000" />
+				<s:GradientEntry color="#333333" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	
+	<s:HGroup width="100%" height="100%" verticalAlign="middle"
+			  paddingLeft="5" paddingRight="10">
+		<s:Image source="@Embed('/assets/player/prev.png')" width="40" height="32" horizontalAlign="right"
+				 id="prev_btn" buttonMode="true" click="prev_btn_clickHandler(event)" />
+		<s:Image source="{playImg}" width="40" height="40"
+				 id="play_btn" buttonMode="true" click="play_btn_clickHandler(event)"/>
+		<s:Image source="@Embed('/assets/player/stop.png')" width="40" height="40"
+				 id="stop_btn" buttonMode="true" click="stop_btn_clickHandler(event)"/>
+		<s:Image source="@Embed('/assets/player/next.png')" width="40" height="32" horizontalAlign="left" 
+				 id="next_btn" buttonMode="true" click="next_btn_clickHandler(event)"/>
+		
+		<s:Label text="" color="#FFFFFF" maxWidth="300" maxDisplayedLines="1" 
+				 id="nowplay_text"/>
+		
+		<s:HSlider width="100%" id="time_slider" minimum="0" maximum="360" 
+				   dataTipFormatFunction="secToTime"
+				   changeStart="time_slider_changeStartHandler(event)" changeEnd="time_slider_changeEndHandler(event)"/>
+		
+		<s:Label text="-" color="#FFFFFF" id="time_cur_text" />
+		<s:Label text="/" color="#FFFFFF" />
+		<s:Label text="-" color="#FFFFFF" id="time_max_text" />
+	</s:HGroup>
+</s:Group>

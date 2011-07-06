@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		viewActivate="view1_viewActivateHandler(event)" xmlns:player="com.mielophone.ui.player.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.codezen.mse.models.Artist;
+			import com.codezen.mse.models.Song;
+			import com.codezen.mse.playr.PlayrTrack;
+			import com.codezen.mse.services.LastFM;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.ViewNavigatorEvent;
+			import spark.transitions.ViewTransitionBase;
+			
+			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication._mp3List = null;
+				
+				FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onSongs);
+				FlexGlobals.topLevelApplication.mse.getTopTracks();
+			}
+			
+			private function onSongs(e:Event):void{
+				FlexGlobals.topLevelApplication.mse.removeEventListener(Event.COMPLETE, onSongs);
+				
+				loader.visible = false;
+				
+				songs.dataProvider = new ArrayCollection(FlexGlobals.topLevelApplication.mse.songs);
+			}
+			
+			private function textinput1_keyUpHandler(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.ENTER && search_input.text.length > 2){
+					FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onSearch);
+					FlexGlobals.topLevelApplication.mse.findMP3byText(search_input.text);
+					
+					result_label.text = "Showing: Results for \""+search_input.text+"\"";
+					
+					loader.visible = true;
+					search_input.text = '';
+				}
+			}
+			
+			private function onSearch(e:Event):void{
+				FlexGlobals.topLevelApplication.mse.removeEventListener(Event.COMPLETE, onSearch);
+				loader.visible = false;
+				
+				FlexGlobals.topLevelApplication._mp3List = FlexGlobals.topLevelApplication.mse.mp3s;
+				var _songs:ArrayCollection = new ArrayCollection();
+				
+				var pl:PlayrTrack;
+				var song:Song;
+				var num:int = 0;
+				for each(pl in FlexGlobals.topLevelApplication._mp3List){
+					song = new Song();
+					song.name = pl.title;
+					song.artist = new Artist();
+					song.artist.name = pl.artist;
+					song.duration = pl.totalSeconds;
+					song.durationText = pl.totalTime;
+					song.number = num++;
+					_songs.addItem(song);
+				}
+				
+				songs.dataProvider = _songs;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:titleContent>
+		<s:TextInput width="100%" prompt="Search for song.." id="search_input" keyUp="textinput1_keyUpHandler(event)" />
+	</s:titleContent>
+	<s:navigationContent>
+		<s:Image width="37" height="32" source="@Embed('/assets/bars/home.png')" 
+				 horizontalAlign="right" click="{navigator.popToFirstView()}"/>
+	</s:navigationContent>
+	
+	<!-- Label -->
+	<s:Label top="10" left="5" right="5" fontSize="22" text="Showing: Top songs" id="result_label" />
+	
+	<!-- result list -->
+	<s:Scroller width="100%" top="40" bottom="50" horizontalScrollPolicy="off" >		
+		<s:DataGroup id="songs" itemRenderer="com.mielophone.ui.itemrenderers.SongItem">
+			<s:layout>
+				<!-- <layouts:Wall3DLayout columnWidth="120" rows="3" /> -->
+				<!-- <s:TileLayout paddingTop="5" paddingLeft="2" paddingRight="2" requestedColumnCount="2" columnAlign="justifyUsingGap" orientation="columns" /> -->
+				<s:VerticalLayout gap="5" />
+			</s:layout>
+		</s:DataGroup>
+	</s:Scroller>
+	
+	<!-- busy indication -->
+	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
+	
+	<!-- player -->
+	<player:MusicPlayer width="100%" height="50" bottom="0" />
+</s:View>

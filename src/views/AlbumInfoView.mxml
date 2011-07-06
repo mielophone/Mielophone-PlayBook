@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Album name"
+		viewActivate="view1_viewActivateHandler(event)" xmlns:player="com.mielophone.ui.player.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.codezen.mse.models.Album;
+			import com.codezen.mse.services.MusicBrainz;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			private var mb:MusicBrainz;
+			
+			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication._mp3List = null;
+				FlexGlobals.topLevelApplication._playPos = -1;
+				
+				mb = new MusicBrainz(10);
+				mb.addEventListener(Event.COMPLETE, onAlbum);
+				mb.findAlbumByName(data.name, data.artist.name);
+				
+				album_img.source = data.image;
+				title = data.name + ' - ' + data.artist.name;
+			}
+			
+			private function onAlbum(e:Event):void{
+				mb.removeEventListener(Event.COMPLETE, onAlbum);
+				
+				var shown_album:Album = data as Album;
+				
+				var al:Album;
+				for each(al in mb.albumsList){
+					if(al.artist.name == shown_album.artist.name && al.name == shown_album.name){
+						shown_album.mbID = al.mbID;
+						shown_album.date = al.date;
+						break;
+					}
+				}
+				
+				mb.addEventListener(Event.COMPLETE, onTracks);
+				mb.getTracks(shown_album);
+			}
+			
+			private function onTracks(e:Event):void{
+				mb.removeEventListener(Event.COMPLETE, onTracks);
+				
+				(data as Album).songs = mb.songsList;
+				songs.dataProvider = new ArrayCollection(mb.songsList);
+				if( mb.songsList != null ){
+					FlexGlobals.topLevelApplication._playQueue = mb.songsList.concat();
+				}
+
+				loader.visible = false;
+			}			
+		]]>
+	</fx:Script>
+	
+	<s:actionContent>
+		<s:Button label="&lt;" click="{navigator.popView()}"/>
+	</s:actionContent>
+	<s:navigationContent>
+		<s:Image width="50" height="50" id="album_img"/>
+	</s:navigationContent>
+	
+	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
+	
+	<s:Scroller width="100%" top="0" bottom="50" horizontalScrollPolicy="off" >		
+		<s:DataGroup id="songs" itemRenderer="com.mielophone.ui.itemrenderers.SongOnlyItem">
+			<s:layout>
+				<!-- <s:TileLayout paddingTop="5" paddingLeft="2" paddingRight="2" requestedColumnCount="2" columnAlign="justifyUsingGap" orientation="columns" /> -->
+				<s:VerticalLayout gap="5" />
+			</s:layout>
+		</s:DataGroup>
+	</s:Scroller>
+	
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
+</s:View>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		viewActivate="view1_enterStateHandler(event)" xmlns:player="com.mielophone.ui.player.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.codezen.mse.services.BBCRadio;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			
+			
+			private function view1_enterStateHandler(event:Event):void{
+				if( FlexGlobals.topLevelApplication._topAlbums == null ){
+					FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onChart);
+					FlexGlobals.topLevelApplication.mse.getTopAlbums();
+				}else{
+					albums.dataProvider = FlexGlobals.topLevelApplication._topAlbums;
+					loader.visible = false;
+				}
+			}
+			
+			private function onChart(e:Event):void{
+				FlexGlobals.topLevelApplication.mse.removeEventListener(Event.COMPLETE, onChart);
+				
+				loader.visible = false;
+				
+				FlexGlobals.topLevelApplication._topAlbums = new ArrayCollection(FlexGlobals.topLevelApplication.mse.albums); 
+				albums.dataProvider = FlexGlobals.topLevelApplication._topAlbums;
+			}
+			
+			private function textinput1_keyUpHandler(event:KeyboardEvent):void{
+				if(event.keyCode == Keyboard.ENTER && search_input.text.length > 2){
+					FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onSearch);
+					FlexGlobals.topLevelApplication.mse.findAlbum(search_input.text);
+					
+					result_label.text = "Showing: Results for \""+search_input.text+"\"";
+					
+					loader.visible = true;
+					search_input.text = '';
+				}
+			}
+			
+			private function onSearch(e:Event):void{
+				FlexGlobals.topLevelApplication.mse.removeEventListener(Event.COMPLETE, onSearch);
+				loader.visible = false;
+				
+				albums.dataProvider = new ArrayCollection(FlexGlobals.topLevelApplication.mse.albums);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:titleContent>
+		<s:TextInput width="100%" prompt="Search for an album.." id="search_input" keyUp="textinput1_keyUpHandler(event)" />
+	</s:titleContent>
+	<s:navigationContent>
+		<s:Image width="37" height="32" source="@Embed('/assets/bars/home.png')" 
+				 horizontalAlign="right" click="{navigator.popToFirstView()}"/>
+	</s:navigationContent>
+	
+	<!-- Label -->
+	<s:Label top="10" left="5" right="5" fontSize="22" text="Showing: Top albums" id="result_label" />
+	
+	<!-- result list -->
+	<s:Scroller width="100%" top="40" bottom="50" horizontalScrollPolicy="off" >		
+		<s:DataGroup id="albums" itemRenderer="com.mielophone.ui.itemrenderers.AlbumItem">
+			<s:layout>
+				<!-- <layouts:Wall3DLayout columnWidth="120" rows="3" /> -->
+				<s:TileLayout paddingTop="5" paddingLeft="2" paddingRight="2" columnWidth="130" rowHeight="200" columnAlign="justifyUsingGap"/>
+			</s:layout>
+		</s:DataGroup>
+	</s:Scroller>
+	
+	<!-- busy indication -->
+	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
+	
+	<!-- player -->
+	<player:MusicPlayer width="100%" height="50" bottom="0" />
+</s:View>

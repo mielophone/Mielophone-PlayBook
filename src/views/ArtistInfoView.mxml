@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		viewActivate="view1_viewActivateHandler(event)" xmlns:player="com.mielophone.ui.player.*">
+	<fx:Script>
+		<![CDATA[
+			import com.codezen.mse.models.Artist;
+			import com.codezen.mse.services.LastFM;
+			import com.codezen.mse.services.MusicBrainz;
+			import com.codezen.util.CUtils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.ViewNavigatorEvent;
+			
+			private var lfm:LastFM;
+			private var mb:MusicBrainz;
+			
+			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				var a:Artist = data as Artist;
+				
+				title = a.name;
+				artist_image.source = a.image;
+				
+				lfm = new LastFM();
+				lfm.addEventListener(Event.COMPLETE, onInfo);
+				lfm.getArtistInfo(a);
+			}
+			
+			private function onInfo(e:Event):void{
+				var a:Artist = data as Artist;
+				
+				trace(ObjectUtil.toString(a))
+				trace(ObjectUtil.toString(lfm.artist))
+				
+				artist_desc.text = CUtils.convertHTMLEntities( CUtils.stripTags(a.description_short) );//description) );
+				
+				mb = new MusicBrainz();
+				mb.addEventListener(Event.COMPLETE, onAlbums);
+				mb.getAlbums(a);
+			}
+			
+			private function onAlbums(e:Event):void{
+				albums.dataProvider = new ArrayCollection(mb.albumsList);
+				
+				loader.visible = false;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:actionContent>
+		<s:Button label="&lt;" click="{navigator.popView()}"/>
+	</s:actionContent>
+	<s:navigationContent>
+		<s:Image width="37" height="32" source="@Embed('/assets/bars/home.png')" 
+				 horizontalAlign="right" click="{navigator.popToFirstView()}"/>
+	</s:navigationContent>
+	
+	<s:HGroup width="100%" height="150" verticalAlign="top">
+		<s:Image width="150" height="150" verticalAlign="top" id="artist_image" />
+		<s:Scroller width="100%" height="100%">
+			<s:Group>
+				<s:Label width="100%" id="artist_desc" paddingTop="10" paddingLeft="5" paddingRight="5" />
+			</s:Group>
+		</s:Scroller>
+	</s:HGroup>
+	
+	<s:Line top="152" width="100%">
+		<s:stroke>
+			<s:SolidColorStroke color="#000000" alpha="0.4" />
+		</s:stroke>
+	</s:Line>
+	
+	<s:Scroller width="100%" top="155" bottom="50" horizontalScrollPolicy="off" >		
+		<s:DataGroup id="albums" itemRenderer="com.mielophone.ui.itemrenderers.AlbumItem">
+			<s:layout>
+				<s:TileLayout paddingTop="5" paddingLeft="2" paddingRight="2" columnWidth="130" rowHeight="200" columnAlign="justifyUsingGap"/>
+			</s:layout>
+		</s:DataGroup>
+	</s:Scroller>
+	
+	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
+	
+	<player:MusicPlayer width="100%" height="50" bottom="0" />
+</s:View>
