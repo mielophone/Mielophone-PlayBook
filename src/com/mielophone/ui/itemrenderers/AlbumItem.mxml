@@ -55,7 +55,8 @@
 		<s:VerticalLayout gap="5" horizontalAlign="center" verticalAlign="top" />
 	</s:layout>
 	
-	<s:BitmapImage width="120" height="120" id="img" mask="{roundedMask}" maskType="clip" />
+	<s:BitmapImage width="120" height="120" id="img" mask="{roundedMask}" maskType="clip" 
+				   smooth="true" smoothingQuality="high"/>
 	<s:Label width="100%" text="{new ObjectProxy(data).artist.name}" fontSize="14" textAlign="center" maxDisplayedLines="2" />
 	<s:Label width="100%" text="{new ObjectProxy(data).name}" textAlign="center" maxDisplayedLines="2" />
 	

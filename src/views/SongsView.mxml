@@ -18,6 +18,8 @@
 			import spark.transitions.ViewTransitionBase;
 			
 			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
 				FlexGlobals.topLevelApplication._mp3List = null;
 				
 				FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onSongs);
@@ -30,6 +32,9 @@
 				loader.visible = false;
 				
 				songs.dataProvider = new ArrayCollection(FlexGlobals.topLevelApplication.mse.songs);
+				if( FlexGlobals.topLevelApplication.mse.songs != null ){
+					FlexGlobals.topLevelApplication._playQueue = FlexGlobals.topLevelApplication.mse.songs.concat();
+				}
 			}
 			
 			private function textinput1_keyUpHandler(event:KeyboardEvent):void{
@@ -97,5 +102,5 @@
 	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
 	
 	<!-- player -->
-	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
 </s:View>

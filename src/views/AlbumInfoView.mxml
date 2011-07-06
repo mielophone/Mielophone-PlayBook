@@ -19,6 +19,8 @@
 			private var mb:MusicBrainz;
 			
 			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
 				FlexGlobals.topLevelApplication._mp3List = null;
 				FlexGlobals.topLevelApplication._playPos = -1;
 				

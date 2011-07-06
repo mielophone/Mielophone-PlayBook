@@ -3,10 +3,54 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:player="com.mielophone.ui.player.*" 
 		xmlns:buttons="com.mielophone.ui.buttons.*"
-		actionBarVisible="false">
+		actionBarVisible="false"
+		viewActivate="view1_viewActivateHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import air.net.URLMonitor;
+			
 			import mx.core.FlexGlobals;
+			import mx.events.EffectEvent;
+			
+			import spark.effects.Fade;
+			import spark.events.ViewNavigatorEvent;
+			
+			protected function view1_viewActivateHandler(event:ViewNavigatorEvent):void
+			{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
+				if(FlexGlobals.topLevelApplication.isOnline) return;
+				
+				// show notify
+				notify_text.visible = true;
+				
+				// init internet check
+				var urlMonitor:URLMonitor = new URLMonitor(new URLRequest("http://google.com"));
+				urlMonitor.addEventListener(StatusEvent.STATUS, function(e:StatusEvent):void{
+					if(!urlMonitor.available){
+						FlexGlobals.topLevelApplication.isOnline = false;
+						notify_text.text = "Sorry, I need data connection to work :(";
+					}else{
+						FlexGlobals.topLevelApplication.isOnline = true;
+						notify_text.text = "Ready to rock! :D";
+						
+						var t:Timer = new Timer(1000,1);
+						t.addEventListener(TimerEvent.TIMER_COMPLETE, function():void{
+							var f:Fade = new Fade(notify_text);
+							f.alphaFrom = 1;
+							f.alphaTo = 0;
+							f.addEventListener(EffectEvent.EFFECT_END, function():void{
+								f = null;
+								t = null;
+							}, false, 0, true);
+							f.play();
+						}, false, 0, true);
+						t.start();
+					}
+				});
+				urlMonitor.start();
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -26,12 +70,19 @@
 	</s:List> -->
 	<s:Label text="Mielophone" fontFamily="Pulse" fontSize="64" horizontalCenter="0" top="20" />
 	
+	<s:Image width="64" height="64" top="0" right="10" source="@Embed('/assets/home/settings.png')" 
+			 buttonMode="true" click="{FlexGlobals.topLevelApplication.openSettings()}"/>
+	
+	<s:Label width="100%" top="100" color="#FF0000" visible="false"
+			 fontFamily="PTSans" fontSize="24" textAlign="center"
+			 id="notify_text" text="Checking data connection.." />
+	
 	<s:HGroup left="5" right="5" top="100" bottom="60" horizontalAlign="center" verticalAlign="middle" gap="10">
 		<buttons:BigButton image="@Embed('/assets/home/artist.png')" text="Artist" click="{FlexGlobals.topLevelApplication.openArtists()}" />
 		<buttons:BigButton image="@Embed('/assets/home/album.png')" text="Album" click="{FlexGlobals.topLevelApplication.openAlbums()}" />
 		<buttons:BigButton image="@Embed('/assets/home/song.png')" text="Song" click="{FlexGlobals.topLevelApplication.openSongs()}" />
 	</s:HGroup>
 	
-	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
 	
 </s:View>

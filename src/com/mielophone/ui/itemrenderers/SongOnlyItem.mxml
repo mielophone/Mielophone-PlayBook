@@ -19,6 +19,8 @@
 			private var bg:uint = 0xFFFFFF;
 			
 			private function itemrenderer1_clickHandler(event:MouseEvent):void{
+				FlexGlobals.topLevelApplication._playPos = this.itemIndex;
+				trace(this.itemIndex);
 				FlexGlobals.topLevelApplication.findSong(data as Song);
 			}
 			

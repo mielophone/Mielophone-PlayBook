@@ -14,6 +14,8 @@
 			import spark.events.ViewNavigatorEvent;
 			
 			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
 				FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onArtists);
 				FlexGlobals.topLevelApplication.mse.getTopArtists();
 			}
@@ -73,6 +75,6 @@
 	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
 	
 	<!-- player -->
-	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
 	
 </s:View>

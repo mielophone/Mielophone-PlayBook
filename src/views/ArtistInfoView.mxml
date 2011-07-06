@@ -10,6 +10,7 @@
 			import com.codezen.util.CUtils;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.utils.ObjectUtil;
 			
 			import spark.events.ViewNavigatorEvent;
@@ -18,6 +19,8 @@
 			private var mb:MusicBrainz;
 			
 			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
 				var a:Artist = data as Artist;
 				
 				title = a.name;
@@ -58,7 +61,8 @@
 	</s:navigationContent>
 	
 	<s:HGroup width="100%" height="150" verticalAlign="top">
-		<s:Image width="150" height="150" verticalAlign="top" id="artist_image" />
+		<s:Image width="150" height="150" verticalAlign="top" id="artist_image" 
+				 smooth="true" smoothingQuality="high"/>
 		<s:Scroller width="100%" height="100%">
 			<s:Group>
 				<s:Label width="100%" id="artist_desc" paddingTop="10" paddingLeft="5" paddingRight="5" />
@@ -82,5 +86,5 @@
 	
 	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
 	
-	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
 </s:View>

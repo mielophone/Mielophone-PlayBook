@@ -59,7 +59,8 @@
 		]]>
 	</fx:Script>
 	
-	<s:BitmapImage width="120" height="120" source="{new ObjectProxy(data).image}" mask="{roundedMask}" maskType="clip" />
+	<s:BitmapImage width="120" height="120" source="{new ObjectProxy(data).image}" mask="{roundedMask}" maskType="clip"
+				   smooth="true" smoothingQuality="high"/>
 	<s:Label width="100%" text="{new ObjectProxy(data).name}" textAlign="center" />
 	
 </s:ItemRenderer>

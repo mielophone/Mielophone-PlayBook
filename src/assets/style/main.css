@@ -23,3 +23,8 @@
 * {
 	fontFamily: PTSans;
 }
+
+s|Button {
+	fontWeight: bold; 
+	fontSize: 22;
+}

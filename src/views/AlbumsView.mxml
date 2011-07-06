@@ -14,6 +14,8 @@
 			
 			
 			private function view1_enterStateHandler(event:Event):void{
+				FlexGlobals.topLevelApplication.playerComponent = player;
+				
 				if( FlexGlobals.topLevelApplication._topAlbums == null ){
 					FlexGlobals.topLevelApplication.mse.addEventListener(Event.COMPLETE, onChart);
 					FlexGlobals.topLevelApplication.mse.getTopAlbums();
@@ -79,5 +81,5 @@
 	<s:BusyIndicator width="32" height="32" verticalCenter="0" horizontalCenter="0" id="loader" />
 	
 	<!-- player -->
-	<player:MusicPlayer width="100%" height="50" bottom="0" />
+	<player:MusicPlayer width="100%" height="50" bottom="0" id="player" />
 </s:View>
