@@ -39,7 +39,7 @@ public var _mp3List:Array;
 public var isOnline:Boolean = false;
 
 private function initApp():void{
-	QNXSystem.system.inactivePowerMode = QNXSystemPowerMode.THROTTLED;
+	//QNXSystem.system.inactivePowerMode = QNXSystemPowerMode.THROTTLED;
 	
 	mse = new MusicSearchEngine();
 	

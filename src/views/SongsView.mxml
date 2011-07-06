@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		viewActivate="view1_viewActivateHandler(event)" xmlns:player="com.mielophone.ui.player.*">
+		xmlns:player="com.mielophone.ui.player.*"
+		creationComplete="view1_viewActivateHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			//viewActivate="view1_viewActivateHandler(event)" 
 			import com.codezen.mse.models.Artist;
 			import com.codezen.mse.models.Song;
 			import com.codezen.mse.playr.PlayrTrack;
@@ -17,7 +19,7 @@
 			import spark.events.ViewNavigatorEvent;
 			import spark.transitions.ViewTransitionBase;
 			
-			private function view1_viewActivateHandler(event:ViewNavigatorEvent):void{
+			private function view1_viewActivateHandler(event:Event):void{
 				FlexGlobals.topLevelApplication.playerComponent = player;
 				
 				FlexGlobals.topLevelApplication._mp3List = null;

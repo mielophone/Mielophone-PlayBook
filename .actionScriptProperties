@@ -44,11 +44,24 @@
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
-    <buildTarget buildTargetName="com.qnx.flexide.multiplatform.qnx.platform" extraPackagingOptions="" signBarFile="false">
-      <airSettings airCertificatePath="" airTimestamp="true" version="1">
-        <airExcludes/>
-      </airSettings>
+    <buildTarget buildTargetName="com.qnx.flexide.multiplatform.qnx.platform" extraPackagingOptions="" signBarFile="true">
       <multiPlatformSettings enabled="true" includePlatformLibs="true" platformID="com.qnx.flexide.multiplatform.qnx.platform" version="2"/>
+      <airSettings airCertificatePath="" airTimestamp="true" version="1">
+        <airExcludes>
+          <pathEntry path="assets/logo/logo-114.png"/>
+          <pathEntry path="assets/logo/logo-128.png"/>
+          <pathEntry path="assets/logo/logo-48.png"/>
+          <pathEntry path="assets/logo/logo-36.png"/>
+          <pathEntry path="assets/icons"/>
+          <pathEntry path="assets/logo/logo-512.png"/>
+          <pathEntry path="assets/logo/logo-480.png"/>
+          <pathEntry path="assets/home"/>
+          <pathEntry path="assets/logo/logo-32.png"/>
+          <pathEntry path="assets/logo/logo-256.png"/>
+          <pathEntry path="assets/logo/logo-64.png"/>
+          <pathEntry path="assets/logo/logo-16.png"/>
+        </airExcludes>
+      </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>
     <buildTarget buildTargetName="default">
