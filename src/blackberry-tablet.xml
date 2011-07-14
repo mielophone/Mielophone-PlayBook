@@ -11,8 +11,10 @@
    <category>core.media</category>
    <action>access_internet</action>
    <action>play_audio</action>
-   <buildId>2</buildId>
+   <action>access_shared</action>
+   <buildId>4</buildId>
    <platformVersion>1.0.0.0</platformVersion>
    <permission>access_internet</permission>
    <permission>play_audio</permission>
+   <permission>access_shared</permission>
 </qnx>

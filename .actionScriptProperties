@@ -48,27 +48,34 @@
       <multiPlatformSettings enabled="true" includePlatformLibs="true" platformID="com.qnx.flexide.multiplatform.qnx.platform" version="2"/>
       <airSettings airCertificatePath="" airTimestamp="true" version="1">
         <airExcludes>
-          <pathEntry path="assets/logo/logo-114.png"/>
-          <pathEntry path="assets/logo/logo-128.png"/>
-          <pathEntry path="assets/logo/logo-48.png"/>
           <pathEntry path="assets/logo/logo-36.png"/>
-          <pathEntry path="assets/icons"/>
+          <pathEntry path="assets/logo/logo-128.png"/>
+          <pathEntry path="assets/logo/logo-16.png"/>
           <pathEntry path="assets/logo/logo-512.png"/>
           <pathEntry path="assets/logo/logo-480.png"/>
-          <pathEntry path="assets/home"/>
+          <pathEntry path="assets/icons"/>
           <pathEntry path="assets/logo/logo-32.png"/>
-          <pathEntry path="assets/logo/logo-256.png"/>
+          <pathEntry path="assets/logo/logo-114.png"/>
+          <pathEntry path="assets/logo/logo-48.png"/>
           <pathEntry path="assets/logo/logo-64.png"/>
-          <pathEntry path="assets/logo/logo-16.png"/>
+          <pathEntry path="assets/logo/logo-256.png"/>
+          <pathEntry path="assets/home"/>
         </airExcludes>
       </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>
     <buildTarget buildTargetName="default">
+      <multiPlatformSettings enabled="false" includePlatformLibs="false" platformID="default" version="2"/>
       <airSettings airCertificatePath="" airTimestamp="true" version="1">
         <airExcludes/>
       </airSettings>
-      <multiPlatformSettings enabled="false" includePlatformLibs="false" platformID="default" version="2"/>
+      <actionScriptSettings version="1"/>
+    </buildTarget>
+    <buildTarget airDownloadURL="" androidSettingsVersion="1" buildTargetName="com.adobe.flexide.multiplatform.android.platform">
+      <multiPlatformSettings enabled="false" includePlatformLibs="false" platformID="com.adobe.flexide.multiplatform.android.platform" version="2"/>
+      <airSettings airCertificatePath="" airTimestamp="true" version="1">
+        <airExcludes/>
+      </airSettings>
       <actionScriptSettings version="1"/>
     </buildTarget>
   </buildTargets>

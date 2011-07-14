@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		title="Settings">
+		title="Settings"
+		creationComplete="view1_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import flash.net.navigateToURL;
 			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
 			private function openURL(url:String):void{
 				navigateToURL(new URLRequest(url), "_blank");
 			}
+			
+			private function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				plugins.dataProvider = new ArrayCollection( FlexGlobals.topLevelApplication.mse.getActivePlugins() );
+			}
+			
+			private function pluginName(p:Object):String{
+				return p.index + ". " + p.name + " (by " + p.author + ")";
+			}
+			
 		]]>
 	</fx:Script>
 	<s:navigationContent>
@@ -34,5 +49,12 @@
 	<s:Label text="Help us improve the app:" fontSize="24"  />
 	<s:Button icon="@Embed('/assets/icons/bug.png')" label="Report bug / Request feature" click="{openURL('https://github.com/mielophone/Mielophone-PlayBook/issues/new')}" />
 	<!-- <s:Button icon="@Embed('/assets/icons/contact.png')" label="Contact us" /> -->
+	
+	<s:Spacer height="32" />
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="Currently active plugins:" fontSize="22"  />
+		<s:Label text="(to load custom plugins put them into /documents/plugins/ folder)" fontSize="18" color="333333"  />
+	</s:HGroup>
+	<s:List width="100%" id="plugins" labelFunction="pluginName" fontSize="20" />
 </s:View>
 

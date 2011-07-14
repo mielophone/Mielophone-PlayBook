@@ -28,7 +28,7 @@
 			[Embed(source="/assets/player/pause.png")] //@Embed()
 			private var pauseImg:Class;
 			
-			// ----------------------------------
+			// ----------------------------------			
 			private function group1_creationCompleteHandler(event:FlexEvent):void{
 				var pl:Playr = FlexGlobals.topLevelApplication.player;
 				
@@ -56,9 +56,9 @@
 					case PlayrStates.STOPPED:
 					case PlayrStates.PAUSED:
 					case PlayrStates.WAITING:
-						if(FlexGlobals.topLevelApplication.player.currentSeconds >= FlexGlobals.topLevelApplication.player.totalSeconds){
+						/*if(FlexGlobals.topLevelApplication.player.currentSeconds >= FlexGlobals.topLevelApplication.player.totalSeconds){
 							onTrackEnd(null);
-						}
+						}*/
 						//QNXSystem.system.inactivePowerMode = QNXSystemPowerMode.NORMAL;
 						play_btn.source = playImg;
 						time_max_text.text = "??";
@@ -76,6 +76,14 @@
 				if(!isDragging){
 					time_slider.value = FlexGlobals.topLevelApplication.player.currentSeconds;
 				}
+				
+				if(FlexGlobals.topLevelApplication.player.currentSeconds >= FlexGlobals.topLevelApplication.player.totalSeconds){
+					FlexGlobals.topLevelApplication.player.scrobbleTo(0);
+					FlexGlobals.topLevelApplication.player.stop();
+					onTrackEnd(null);
+					return;
+				}
+				
 				time_cur_text.text = FlexGlobals.topLevelApplication.player.currentTime;
 			}
 			
